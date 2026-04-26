@@ -1,18 +1,18 @@
-const app = require('./src/app');
-const connectDB = require('./src/db/db');
-require('dotenv').config();
-
 process.on('uncaughtException', (err) => {
-    console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-    console.error(err.name, err.message, err.stack);
+    console.error('FATAL: UNCAUGHT EXCEPTION!');
+    console.error(err);
     process.exit(1);
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error('UNHANDLED REJECTION! 💥 Shutting down...');
-    console.error(err.name, err.message, err.stack);
+    console.error('FATAL: UNHANDLED REJECTION!');
+    console.error(err);
     process.exit(1);
 });
+
+const app = require('./src/app');
+const connectDB = require('./src/db/db');
+require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 

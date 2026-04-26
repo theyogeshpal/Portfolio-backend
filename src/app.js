@@ -19,7 +19,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+console.log('Middleware initialized');
+
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+console.log('Static routes initialized');
 
 // Multer Config
 const storage = multer.diskStorage({
@@ -302,5 +305,7 @@ app.post('/api/contact', async (req, res) => {
 app.get('/', (req, res) => {
     res.send('Portfolio API is running...');
 });
+
+console.log('All routes registered');
 
 module.exports = app;
