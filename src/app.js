@@ -55,7 +55,8 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    const url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const url = `${protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     res.json({ url, filename: req.file.originalname });
 });
 
@@ -63,7 +64,8 @@ app.post('/api/upload-multiple', upload.array('images', 10), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ message: 'No files uploaded' });
     }
-    const urls = req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const urls = req.files.map(file => `${protocol}://${req.get('host')}/uploads/${file.filename}`);
     res.json({ urls });
 });
 
