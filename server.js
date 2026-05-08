@@ -15,7 +15,7 @@ setInterval(async () => {
   } catch (error) {
     console.error(`Ping failed at ${new Date().toISOString()}: ${error.message}`);
   }
-}, 840000); /
+}, 840000); 
 
 const startServer = async () => {
     try {
