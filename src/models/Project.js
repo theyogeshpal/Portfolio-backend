@@ -8,7 +8,8 @@ const projectSchema = new mongoose.Schema({
     technologies: { type: String, required: true },
     description: { type: String, required: true },
     ratings: [Number],
-    averageRating: { type: Number, default: 0 }
+    averageRating: { type: Number, default: 0 },
+    isVisible: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Project', projectSchema);

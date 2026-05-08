@@ -98,7 +98,7 @@ app.get('/api/portfolio-data', async (req, res) => {
     try {
         const [profile, projects, experiences, educations, timeline, messages] = await Promise.all([
             Profile.findOne(),
-            Project.find().sort({ createdAt: 1 }),
+            Project.find({ isVisible: true }).sort({ createdAt: 1 }),
             Experience.find().sort({ createdAt: 1 }),
             Education.find().sort({ year: -1 }),
             Timeline.find().sort({ year: -1 }),
@@ -114,6 +114,16 @@ app.get('/api/portfolio-data', async (req, res) => {
             timeline: timeline || [],
             messages: messages || []
         });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Admin - get all projects including hidden
+app.get('/api/projects/all', async (req, res) => {
+    try {
+        const projects = await Project.find().sort({ createdAt: 1 });
+        res.json(projects);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -162,6 +172,18 @@ app.post('/api/projects/:id/rate', async (req, res) => {
         res.json(project);
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+});
+
+app.patch('/api/projects/:id/toggle-visibility', async (req, res) => {
+    try {
+        const project = await Project.findById(req.params.id);
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+        project.isVisible = !project.isVisible;
+        await project.save();
+        res.json({ isVisible: project.isVisible });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
