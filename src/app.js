@@ -98,7 +98,7 @@ app.get('/api/portfolio-data', async (req, res) => {
     try {
         const [profile, projects, experiences, educations, timeline, messages] = await Promise.all([
             Profile.findOne(),
-            Project.find({ isVisible: true }).sort({ createdAt: 1 }),
+            Project.find({ isVisible: true }).sort({ order: 1, createdAt: 1 }),
             Experience.find().sort({ createdAt: 1 }),
             Education.find().sort({ year: -1 }),
             Timeline.find().sort({ year: -1 }),
@@ -122,7 +122,7 @@ app.get('/api/portfolio-data', async (req, res) => {
 // Admin - get all projects including hidden
 app.get('/api/projects/all', async (req, res) => {
     try {
-        const projects = await Project.find().sort({ createdAt: 1 });
+        const projects = await Project.find().sort({ order: 1, createdAt: 1 });
         res.json(projects);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -172,6 +172,18 @@ app.post('/api/projects/:id/rate', async (req, res) => {
         res.json(project);
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+});
+
+app.patch('/api/projects/reorder', async (req, res) => {
+    try {
+        const { orderedIds } = req.body; // array of project ids in new order
+        await Promise.all(orderedIds.map((id, index) => 
+            Project.findByIdAndUpdate(id, { order: index })
+        ));
+        res.json({ message: 'Order updated' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
