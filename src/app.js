@@ -119,6 +119,18 @@ app.get('/api/portfolio-data', async (req, res) => {
     }
 });
 
+app.patch('/api/projects/reorder', async (req, res) => {
+    try {
+        const { orderedIds } = req.body;
+        await Promise.all(orderedIds.map((id, index) => 
+            Project.findByIdAndUpdate(id, { order: index })
+        ));
+        res.json({ message: 'Order updated' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Admin - get all projects including hidden
 app.get('/api/projects/all', async (req, res) => {
     try {
@@ -172,18 +184,6 @@ app.post('/api/projects/:id/rate', async (req, res) => {
         res.json(project);
     } catch (error) {
         res.status(400).json({ message: error.message });
-    }
-});
-
-app.patch('/api/projects/reorder', async (req, res) => {
-    try {
-        const { orderedIds } = req.body; // array of project ids in new order
-        await Promise.all(orderedIds.map((id, index) => 
-            Project.findByIdAndUpdate(id, { order: index })
-        ));
-        res.json({ message: 'Order updated' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
     }
 });
 
